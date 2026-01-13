@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.secureteam</groupId>
@@ -14,20 +13,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        
-        <!-- Versions Jakarta EE et WildFly -->
         <version.jakarta.ee>11.0.0</version.jakarta.ee>
         <version.wildfly.bom>38.0.1.Final</version.wildfly.bom>
-        
-        <!-- ✅ VERSIONS SÉCURISÉES MISES À JOUR -->
-        <version.nimbus>10.0.2</version.nimbus>
-        <version.bouncycastle>1.78</version.bouncycastle>
-        <version.postgresql>42.7.8</version.postgresql>
-        <version.redis>5.2.0</version.redis>
-        
-        <!-- Autres versions (inchangées) -->
+        <version.nimbus>9.37</version.nimbus>
         <version.jpaseto>0.7.0</version.jpaseto>
-        <version.aerogear>1.77</version.aerogear>
+        <version.aerogear>1.0.0</version.aerogear>
+        <version.bouncycastle>1.77</version.bouncycastle>
+        <version.opencv>4.8.0-0</version.opencv>
+        <version.redis>5.1.2</version.redis>
+        <version.postgresql>42.7.2</version.postgresql>
         <version.junit>5.10.0</version.junit>
         <version.mockito>5.6.0</version.mockito>
     </properties>
@@ -38,12 +32,12 @@
             <name>Maven Central</name>
             <url>https://repo.maven.apache.org/maven2</url>
             <layout>default</layout>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
             <releases>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>jboss-public-repository-group</id>
@@ -63,7 +57,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- WildFly BOM -->
             <dependency>
                 <groupId>org.wildfly.bom</groupId>
                 <artifactId>wildfly-ee-with-tools</artifactId>
@@ -75,7 +68,7 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Jakarta EE API -->
+        <!-- Jakarta EE 11 API -->
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
@@ -83,15 +76,14 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- ✅ JWT - Nimbus JOSE+JWT (VERSION SÉCURISÉE 10.0.2) -->
-        <!-- Corrige CVE-2025-53864, CVE-2019-17195 -->
+        <!-- JWT Support (Nimbus JOSE JWT) -->
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
             <version>${version.nimbus}</version>
         </dependency>
 
-        <!-- PASETO - Alternative sécurisée aux JWT -->
+        <!-- PASETO Support -->
         <dependency>
             <groupId>dev.paseto</groupId>
             <artifactId>jpaseto-api</artifactId>
@@ -113,14 +105,14 @@
             <version>${version.jpaseto}</version>
         </dependency>
 
-        <!-- MFA / OTP -->
+        <!-- TOTP 2FA -->
         <dependency>
             <groupId>org.jboss.aerogear</groupId>
             <artifactId>aerogear-otp-java</artifactId>
             <version>${version.aerogear}</version>
         </dependency>
 
-        <!-- QR Code Generator pour MFA -->
+        <!-- QR Code Generation for TOTP -->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
@@ -132,15 +124,14 @@
             <version>3.5.3</version>
         </dependency>
 
-        <!-- ✅ Cryptographie - BouncyCastle (VERSION SÉCURISÉE 1.78) -->
-        <!-- Corrige CVE-2024-29857, CVE-2024-34447, CVE-2024-30171 -->
+        <!-- Cryptography (Bouncy Castle) -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
             <version>${version.bouncycastle}</version>
         </dependency>
 
-        <!-- MicroProfile Config -->
+        <!-- MicroProfile Config for Externalized Secrets -->
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
@@ -148,21 +139,29 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- ✅ Redis Client - Jedis (VERSION AMÉLIORÉE 5.2.0) -->
+        <!-- OpenCV for Steganography -->
+        <!--
+        <dependency>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>${version.opencv}</version>
+        </dependency>
+        -->
+
+        <!-- Redis Client -->
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>${version.redis}</version>
         </dependency>
 
-        <!-- ✅ PostgreSQL JDBC Driver (VERSION SÉCURISÉE 42.7.8) -->
-        <!-- Corrige CVE-2024-1597, CVE-2025-49146 -->
+        <!-- PostgreSQL Driver -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${version.postgresql}</version>
         </dependency>
-
+        
         <!-- Logging -->
         <dependency>
             <groupId>org.jboss.logging</groupId>
@@ -170,20 +169,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- JWT Alternative - JJWT -->
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>0.12.5</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>0.12.5</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <!-- Tests -->
+        <!-- Testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -196,12 +182,23 @@
             <version>${version.mockito}</version>
             <scope>test</scope>
         </dependency>
+        <!-- HTTPS/TLS Support -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.5</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>secureteam-access</finalName>
         <plugins>
-            <!-- Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -211,8 +208,6 @@
                     <target>21</target>
                 </configuration>
             </plugin>
-
-            <!-- WAR Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -221,8 +216,6 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
-
-            <!-- 🛡️ OWASP Dependency Check - Scanner de Vulnérabilités -->
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
@@ -235,8 +228,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- WildFly Maven Plugin -->
             <plugin>
                 <groupId>org.wildfly.plugins</groupId>
                 <artifactId>wildfly-maven-plugin</artifactId>
