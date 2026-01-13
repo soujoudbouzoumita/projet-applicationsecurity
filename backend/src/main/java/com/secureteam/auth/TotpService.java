@@ -3,8 +3,12 @@ package com.secureteam.auth;
 import org.jboss.aerogear.security.otp.api.Base32;
 import jakarta.enterprise.context.ApplicationScoped;
 
+import org.jboss.logging.Logger;
+
 @ApplicationScoped
 public class TotpService {
+
+    private static final Logger LOG = Logger.getLogger(TotpService.class);
 
     public String generateSecret() {
         return Base32.random();
@@ -17,20 +21,20 @@ public class TotpService {
             long timeWindow = 30; // 30 seconds
             long currentTimestamp = System.currentTimeMillis() / 1000;
 
-            // Check current, past 10 and future 2 windows (approx +/- 5 mins back, 1 min
-            // forward)
-            for (int i = -10; i <= 2; i++) {
+            // Check current, past 2 and future 2 windows (approx +/- 1 min)
+            // Reduced from previous excessive window of -10/+2
+            for (int i = -2; i <= 2; i++) {
                 long t = (currentTimestamp / timeWindow) + i;
                 if (verifyCode(key, t, code)) {
                     if (i != 0)
-                        System.out.println("[MFA DEBUG] Validated with drift: " + (i * 30) + "s");
+                        LOG.debugv("[MFA DEBUG] Validated with drift: {0}s", (i * 30));
                     return true;
                 }
             }
 
             return false;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("MFA Validation Error", e);
             return false;
         }
     }
