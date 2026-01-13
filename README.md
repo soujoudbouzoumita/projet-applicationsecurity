@@ -121,13 +121,12 @@ docker-compose -f docker-compose.prod.yml up -d --build
 | Passive Authorization | Implemented **Real-time ABAC Evaluation**. | Fixed ✅ |
 | Token Replay | Implemented **Redis JTI Revocation**. | Fixed ✅ |
 | Stego Placeholder | Implemented **Functional LSB Module**. | Fixed ✅ |
+|Dépendance|Ancienne| Version✅ Nouvelle Version|CVE Corrigés|
+|nimbus-jose-jwt|1.0.0|10.0.2|CVE-2025-53864, CVE-2019-17195|
+|postgresql|42.7.2|42.7.8|CVE-2024-1597, CVE-2025-49146|
+|bcprov-jdk18on|1.77|1.78|CVE-2024-29857, CVE-2024-34447, CVE-2024-30171|
+|jedis|5.1.2|5.2.0|Améliorations de sécurité|
 ---
-RÉSUMÉ DES CHANGEMENTS
-DépendanceVersion ActuelleVersion Recommandée   Gravité
-nimbus-jose-jwt     1.0.0         10.0.2      🔴 CRITIQUE
-postgresql          42.7.2        42.7.8      🟠 ÉLEVÉE
-bcprov-jdk18on       1.77         1.78        🟠 ÉLEVÉE
-jedis                5.1.2        5.2.0       🟡 MOYENNE
 
 
 
