@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.annotation.security.PermitAll;
 import java.util.HashMap;
 import java.util.Map;
+import org.jboss.logging.Logger;
 
 @Path("/auth")
 @Produces(MediaType.APPLICATION_JSON)
@@ -32,6 +33,8 @@ public class AuthResource {
 
     @Inject
     private RedisClient redisClient;
+
+    private static final Logger LOG = Logger.getLogger(AuthResource.class);
 
     @GET
     @Path("/mfa/setup")
@@ -75,7 +78,7 @@ public class AuthResource {
                 response.put("token", token);
                 return Response.ok(response).build();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Security Engine Error: Token Generation Failed", e);
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                         .entity("Security Engine Error: Token Generation Failed").build();
             }
