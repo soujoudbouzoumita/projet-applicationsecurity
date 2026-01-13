@@ -11,7 +11,8 @@ export class SecureTeamApp extends LitElement {
     activeView: { type: String },
     qrImage: { type: String },
     pendingUser: { type: String },
-    backendStatus: { type: String } // 'checking', 'online', 'offline'
+    backendStatus: { type: String }, // 'checking', 'online', 'offline'
+    mfaEnabled: { type: Boolean }
   };
 
   constructor() {
@@ -26,6 +27,7 @@ export class SecureTeamApp extends LitElement {
     this.qrImage = "";
     this.pendingUser = "";
     this.backendStatus = "checking";
+    this.mfaEnabled = false;
   }
 
   static styles = css`
@@ -250,14 +252,22 @@ export class SecureTeamApp extends LitElement {
     return html`
             <div class="mfa-box">
                 <h3 style="margin-bottom: 0.5rem;">Two-Factor Authentication</h3>
-                <p style="color: #94a3b8; font-size: 0.85rem;">Scan this code with Google Authenticator to setup your device.</p>
                 
-                <div class="qr-container">
-                    ${this.qrImage ? html`<img src="${this.qrImage}" alt="MFA QR Code">` : html`<div style="width:180px;height:180px;background:#eee;display:flex;align-items:center;justify-content:center;color:#666">Generating...</div>`}
-                </div>
+                ${!this.mfaEnabled ? html`
+                    <p style="color: #94a3b8; font-size: 0.85rem;">Scan this code with Google Authenticator to setup your account.</p>
+                    <div class="qr-container">
+                        ${this.qrImage ? html`<img src="${this.qrImage}" alt="MFA QR Code">` : html`<div style="width:180px;height:180px;background:#eee;display:flex;align-items:center;justify-content:center;color:#666">Generating...</div>`}
+                    </div>
+                ` : html`
+                    <p style="color: #94a3b8; font-size: 0.85rem;">Identity confirmed. Please verify your identity using your security device.</p>
+                    <div style="margin: 2rem 0; font-size: 3rem; color: #38bdf8;">
+                        <i class="fas fa-shield-alt"></i>
+                        <div style="font-size: 1rem; color: #94a3b8; margin-top: 1rem;">MFA Required</div>
+                    </div>
+                `}
 
                 <p style="color: #94a3b8; font-size: 0.8rem; margin: 1rem 0;">Enter the 6-digit code from your app</p>
-                <input type="text" maxlength="6" class="otp-input" id="otp" placeholder="000 000" autofocus>
+                <input type="text" maxlength="6" class="otp-input" id="otp" placeholder="000 000" autofocus @keyup="${(e) => e.key === 'Enter' && this._login()}">
                 
                 <button class="btn-primary" @click="${this._login}">Establish Secure Session</button>
                 <button class="btn-ghost" style="margin-top: 1rem; width: 100%;" @click="${() => this.loginStep = 1}">Back</button>
@@ -409,27 +419,36 @@ export class SecureTeamApp extends LitElement {
     const pass = this.shadowRoot.getElementById('pass').value;
 
     if (user && pass) {
-      this.pendingUser = user;
-      this.userRole = user === 'admin' ? 'security_admin' : 'external_collaborator';
-
-      // Fetch dynamic QR code from backend
       try {
-        const resp = await fetch(`/secureteam-access/api/auth/mfa/setup?username=${user}`);
-        const data = await resp.json();
-        this.qrImage = data.qrImage;
+        const loginData = await this.authService.login(user, pass);
+        this.pendingUser = user;
+        this.mfaEnabled = loginData.mfaEnabled;
+        this.userRole = user === 'admin' ? 'security_admin' : 'external_collaborator';
+
+        if (!this.mfaEnabled) {
+          // Fetch dynamic QR code from backend for setup
+          const resp = await fetch(`/secureteam-access/api/auth/mfa/setup?username=${user}`);
+          if (resp.ok) {
+            const data = await resp.json();
+            this.qrImage = data.qrImage;
+          } else {
+            throw new Error("Failed to initialize MFA setup");
+          }
+        }
+
         this.loginStep = 2;
       } catch (e) {
-        console.error("MFA setup failed", e);
-        alert("Connection to Security Engine failed. Check if backend is running.");
+        console.error("Authentication failed", e);
+        alert(e.message || "Connection to Security Engine failed.");
       }
     } else {
-      alert('Invalid credentials');
+      alert('Please enter username and password');
     }
   }
 
   async _login() {
-    const otp = this.shadowRoot.getElementById('otp').value;
-    if (otp.length === 6) {
+    const otp = this.shadowRoot.getElementById('otp').value.trim().replace(/\s+/g, '');
+    if (otp.length === 6 && /^\d{6}$/.test(otp)) {
       try {
         // CALL REAL BACKEND MFA VERIFY
         const resp = await fetch(`/secureteam-access/api/auth/mfa/verify`, {

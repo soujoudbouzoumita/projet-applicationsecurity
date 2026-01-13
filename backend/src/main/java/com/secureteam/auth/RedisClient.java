@@ -43,6 +43,12 @@ public class RedisClient {
         }
     }
 
+    public void delete(String key) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            jedis.del(key);
+        }
+    }
+
     @PreDestroy
     public void close() {
         if (jedisPool != null) {

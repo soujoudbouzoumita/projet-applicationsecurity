@@ -11,27 +11,26 @@ export class AuthService {
     }
 
     async login(username, password) {
-        // 1. Generate PKCE Verifier & Challenge
-        const verifier = this.generateCodeVerifier();
-        const challenge = await this.generateCodeChallenge(verifier);
+        // CALL REAL BACKEND 1FA LOGIN
+        const resp = await fetch('/secureteam-access/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
 
-        // 2. Mock API Call to Backend (SecureTeam IAM)
-        // In real flow, this redirects to /authorize
-        console.log(`SecureTeam Auth: Initiating OAuth 2.1 PKCE with Challenge: ${challenge}`);
-
-        // Simulate successful token exchange
-        if (username === 'admin' && password === 'password') {
-            this.token = "mock_secureteam_paseto_v4_token";
-            localStorage.setItem('secureteam_token', this.token);
-            return true;
-        } else {
-            throw new Error("Invalid credentials");
+        if (!resp.ok) {
+            const errorText = await resp.text();
+            throw new Error(errorText || "Invalid credentials");
         }
+
+        const data = await resp.json();
+        // data contains { username, mfaEnabled }
+        return data;
     }
 
     async logout() {
         this.token = null;
-        localStorage.removeItem('sentinel_token');
+        localStorage.removeItem('secureteam_token');
     }
 
     generateCodeVerifier() {

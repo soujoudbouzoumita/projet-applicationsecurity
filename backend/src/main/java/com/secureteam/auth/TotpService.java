@@ -1,9 +1,10 @@
 package com.secureteam.auth;
 
+import org.jboss.aerogear.security.otp.Totp;
 import org.jboss.aerogear.security.otp.api.Base32;
 import jakarta.enterprise.context.ApplicationScoped;
-
 import org.jboss.logging.Logger;
+import java.security.SecureRandom;
 
 @ApplicationScoped
 public class TotpService {
@@ -11,27 +12,34 @@ public class TotpService {
     private static final Logger LOG = Logger.getLogger(TotpService.class);
 
     public String generateSecret() {
-        return Base32.random();
+        // Generate random 160-bit value and Base32 encode it
+        byte[] buffer = new byte[20];
+        new SecureRandom().nextBytes(buffer);
+        return Base32.encode(buffer);
     }
 
     public boolean validateCode(String secret, String code) {
         try {
-            // Using Aerogear Base32
-            byte[] key = Base32.decode(secret);
-            long timeWindow = 30; // 30 seconds
-            long currentTimestamp = System.currentTimeMillis() / 1000;
-
-            // Check current, past 2 and future 2 windows (approx +/- 1 min)
-            // Reduced from previous excessive window of -10/+2
-            for (int i = -2; i <= 2; i++) {
-                long t = (currentTimestamp / timeWindow) + i;
-                if (verifyCode(key, t, code)) {
+            // Use Aerogear's TOTP implementation which handles RFC 6238 correctly
+            Totp totp = new Totp(secret);
+            
+            // The verify method checks the code against current window
+            // We need to check a wider window for clock drift, so check manually
+            long now = System.currentTimeMillis();
+            
+            // Check ±3 windows (±90 seconds)
+            for (int i = -3; i <= 3; i++) {
+                long time = now + (i * 30000); // ± 30 seconds per window
+                // Aerogear's verify() method accepts only the code, so we'll check ourselves
+                if (verifyCode(secret, code, time)) {
                     if (i != 0)
-                        LOG.debugv("[MFA DEBUG] Validated with drift: {0}s", (i * 30));
+                        LOG.infov("[MFA] Validated with drift: {0}s (window {1})", (i * 30), i);
+                    LOG.infov("[MFA] Validation SUCCESS for code {0} at window {1}", code, i);
                     return true;
                 }
             }
 
+            LOG.warnv("[MFA] Validation FAILED for code {0} (current time: {1}ms)", code, now);
             return false;
         } catch (Exception e) {
             LOG.error("MFA Validation Error", e);
@@ -39,7 +47,11 @@ public class TotpService {
         }
     }
 
-    private boolean verifyCode(byte[] key, long t, String code) throws Exception {
+    private boolean verifyCode(String secret, String code, long timeMillis) throws Exception {
+        byte[] key = Base32.decode(secret);
+        long timeWindow = 30; // 30 seconds
+        long t = (timeMillis / 1000) / timeWindow;
+
         byte[] data = new byte[8];
         long value = t;
         for (int i = 8; i-- > 0; value >>>= 8) {
@@ -51,12 +63,13 @@ public class TotpService {
         mac.init(signKey);
         byte[] hash = mac.doFinal(data);
 
-        int offset = hash[hash.length - 1] & 0xF;
+        int offset = hash[hash.length - 1] & 0x0f;
+        
         long truncatedHash = 0;
         for (int i = 0; i < 4; ++i) {
-            truncatedHash <<= 8;
-            truncatedHash |= (hash[offset + i] & 0xFF);
+            truncatedHash = (truncatedHash << 8) | (hash[offset + i] & 0xFF);
         }
+        
         truncatedHash &= 0x7FFFFFFF;
         truncatedHash %= 1000000;
 
@@ -64,7 +77,8 @@ public class TotpService {
     }
 
     public String generateQrCodeUri(String secret, String account, String issuer) {
-        return String.format("otpauth://totp/%s:%s?secret=%s&issuer=%s",
+        // Format: otpauth://totp/[issuer:]account?secret=...&issuer=...
+        return String.format("otpauth://totp/%s:%s?secret=%s&issuer=%s&period=30&digits=6&algorithm=SHA1",
                 issuer, account, secret, issuer);
     }
 
@@ -80,6 +94,7 @@ public class TotpService {
 
             return java.util.Base64.getEncoder().encodeToString(pngData);
         } catch (Exception e) {
+            LOG.error("QR Code generation failed", e);
             return "";
         }
     }
