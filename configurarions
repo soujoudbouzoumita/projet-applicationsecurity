@@ -139,15 +139,7 @@ OK
 - Vérifier les crédentiels PostgreSQL
 - Tester manuellement : psql -h localhost -U sentinel_admin
 
----
 
-## Prochaines étapes
 
-Une fois configuré :
-1. ✅ Frontend fonctionne sur http://localhost:5173/
-2. ✅ Backend connecté à PostgreSQL + Redis
-3. ✅ MFA stockée dans Redis
-4. ✅ Utilisateurs stockés dans PostgreSQL
-5. 🚀 Prêt pour la production !
 
-www.postgresql.org
+
