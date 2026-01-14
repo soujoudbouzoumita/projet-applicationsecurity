@@ -65,7 +65,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8081:8080" # Dashboard
+      - "8081:8080" #Interface
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
