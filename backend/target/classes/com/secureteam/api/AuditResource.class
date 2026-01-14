@@ -1,1 +1,34 @@
 
+package com.secureteam.api;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Path("/audit")
+@Produces({"application/json"})
+@ApplicationScoped
+public class AuditResource {
+   private final List logs = new ArrayList();
+
+   public void logAccess(String user, String resource, boolean granted, String reason) {
+      Map log = new HashMap();
+      log.put("timestamp", System.currentTimeMillis());
+      log.put("user", user);
+      log.put("resource", resource);
+      log.put("granted", granted);
+      log.put("reason", reason);
+      this.logs.add(log);
+   }
+
+   @GET
+   public Response getLogs() {
+      return Response.ok(this.logs).build();
+   }
+}
