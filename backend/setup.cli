@@ -1,0 +1,16 @@
+embed-server --std-out=echo
+
+# Ajouter le module JDBC si nécessaire (si pas déjà fait dans Dockerfile)
+# /subsystem=datasources/jdbc-driver=postgresql:add(driver-name=postgresql,driver-module-name=org.postgresql,driver-class-name=org.postgresql.Driver)
+
+# Créer la datasource
+data-source add \
+    --name=PostgresDS \
+    --driver-name=postgresql \
+    --jndi-name=java:/PostgresDS \
+    --connection-url=jdbc:postgresql://postgres:5432/secureteam_access_db \
+    --user-name=sentinel_admin \
+    --password=secure_password_123! \
+    --enabled=true
+
+stop-embedded-server

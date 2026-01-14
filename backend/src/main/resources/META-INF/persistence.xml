@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+                                 https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="secureteamPU" transaction-type="JTA">
+        <!-- WildFly gère JPA via JTA, donc JTA ici -->
+
+        <!-- IMPORTANT : le nom doit matcher ton datasource WildFly -->
+        <!-- JNDI name must match the datasource created in WildFly (see backend/setup.cli) -->
+        <jta-data-source>java:/PostgresDS</jta-data-source>
+
+        <properties>
+            <!-- Hibernate / JPA -->
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

@@ -1,0 +1,104 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: secureteam-postgres
+    environment:
+      POSTGRES_USER: sentinel_admin
+      POSTGRES_PASSWORD: secure_password_123!
+      POSTGRES_DB: secureteam_access_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./backend/db:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - secureteam-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinel_admin -d secureteam_access_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    container_name: secureteam-adminer
+    ports:
+      - "8081:8080"
+    networks:
+      - secureteam-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: secureteam-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - secureteam-net
+    command: redis-server --appendonly yes
+
+  minio:
+    image: minio/minio
+    container_name: secureteam-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minio_admin
+      MINIO_ROOT_PASSWORD: secure_minio_password_123!
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - secureteam-net
+
+  backend:
+    build: ./backend
+    container_name: secureteam-backend
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/secureteam_access_db
+      DB_USER: sentinel_admin
+      DB_PASSWORD: secure_password_123!
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minio_admin
+      MINIO_SECRET_KEY: secure_minio_password_123!
+      SECRET_MASTER_PASSWORD: change_me_in_prod_master_password_must_be_32_chars!
+      SECRET_ENCRYPTION_SALT: change_me_in_prod_salt_must_be_32_chars!
+      SECRET_ENCRYPTION_PEPPER: change_me_in_prod_pepper_must_be_32_chars!
+      CORS_ALLOWED_ORIGIN: http://localhost:5173
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      minio:
+        condition: service_started
+    networks:
+      - secureteam-net
+
+  frontend:
+    build: ./frontend
+    container_name: secureteam-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - secureteam-net
+
+networks:
+  secureteam-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:

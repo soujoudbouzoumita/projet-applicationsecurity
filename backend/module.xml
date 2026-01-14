@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.9" name="org.postgresql">
+    <resources>
+        <resource-root path="postgresql-42.7.3.jar"/>
+    </resources>
+    <dependencies>
+        <!-- AJOUT CRITIQUE : Contient javax.security.sasl.SaslException -->
+        <module name="javax.api"/>
+        
+        <!-- Recommandé pour WildFly récent -->
+        <module name="javax.transaction.api"/>
+        
+        <!-- Vos dépendances existantes -->
+        <module name="java.sql"/>
+        <module name="java.naming"/>
+        <module name="java.management"/>
+        <module name="java.logging"/>
+    </dependencies>
+</module>

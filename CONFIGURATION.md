@@ -1,0 +1,168 @@
+# 🔧 Guide de Configuration Redis + PostgreSQL
+
+## Option 1 : Configuration avec Docker Compose (RECOMMANDÉ)
+
+### Prérequis :
+- Docker Desktop installé
+- Port 5432 (PostgreSQL) disponible
+- Port 6379 (Redis) disponible
+
+### Commande :
+```bash
+cd infrastructure
+docker-compose up -d
+```
+
+### Services lancés :
+- PostgreSQL 16.1 sur `localhost:5432`
+- Redis 7.2 sur `localhost:6379`
+- MinIO sur `localhost:9000`
+- Traefik Dashboard sur `localhost:8081`
+
+---
+
+## Option 2 : Configuration Manuelle (Windows)
+
+### Étape 1 : Installer PostgreSQL
+1. Téléchargez : https://www.postgresql.org/download/windows/
+2. Exécutez l'installateur
+3. **Mémorisez le mot de passe du superuser**
+4. Acceptez les ports par défaut (5432)
+
+### Étape 2 : Créer la base de données
+```sql
+-- Lancez pgAdmin ou psql
+CREATE DATABASE secureteam_access_db;
+CREATE USER sentinel_admin WITH PASSWORD 'secure_password_123!';
+ALTER ROLE sentinel_admin WITH CREATEDB;
+GRANT ALL PRIVILEGES ON DATABASE secureteam_access_db TO sentinel_admin;
+
+-- Extensions nécessaires
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+```
+
+### Étape 3 : Installer Redis
+1. Téléchargez : https://github.com/microsoftarchive/redis/releases
+2. Exécutez l'installateur
+3. Redis sera sur `localhost:6379` par défaut
+
+### Étape 4 : Tester la connexion
+```bash
+# Test PostgreSQL
+psql -h localhost -U sentinel_admin -d secureteam_access_db
+
+# Test Redis
+redis-cli ping
+# Devrait répondre : PONG
+```
+
+---
+
+## Option 3 : Utiliser WSL2 (Windows Subsystem for Linux)
+
+### Installation rapide :
+```bash
+# Dans WSL2 Ubuntu
+sudo apt update
+sudo apt install postgresql redis-server
+
+# Démarrer les services
+sudo service postgresql start
+sudo service redis-server start
+```
+
+---
+
+## Identifiants par défaut
+
+| Service | Host | Port | User | Password |
+|---------|------|------|------|----------|
+| PostgreSQL | localhost | 5432 | sentinel_admin | secure_password_123! |
+| Redis | localhost | 6379 | - | (none) |
+| MinIO | localhost | 9000 | minio_admin | secure_minio_password_123! |
+
+---
+
+## Configuration dans l'application
+
+### 1. Copier le fichier .env
+```bash
+cp .env.example .env
+```
+
+### 2. Modifier les variables d'environnement
+Éditez `.env` avec vos paramètres de connexion
+
+### 3. Configurer le backend (pom.xml)
+Dans `backend/pom.xml`, les dépendances sont déjà incluses :
+- `org.postgresql:postgresql:42.7.2`
+- `redis.clients:jedis:5.1.2`
+
+### 4. Redémarrer WildFly
+```bash
+cd backend
+mvn wildfly:run
+```
+
+---
+
+## Schéma de la base de données
+
+Le projet crée automatiquement les tables :
+- `users` - Utilisateurs
+- `projects` - Projets
+- `roles` - Rôles d'accès
+- `audit_logs` - Journaux d'audit
+- `mfa_secrets` - Secrets MFA (stockés aussi dans Redis pour rapidité)
+
+---
+
+## Vérification après configuration
+
+### PostgreSQL
+```bash
+psql -h localhost -U sentinel_admin -d secureteam_access_db -c "\dt"
+```
+Devrait lister les tables.
+
+### Redis
+```bash
+redis-cli
+> PING
+PONG
+> SET test_key "Hello"
+OK
+> GET test_key
+"Hello"
+```
+
+---
+
+## Dépannage
+
+### PostgreSQL ne démarre pas
+- Vérifier le port 5432 n'est pas utilisé : `netstat -ano | findstr 5432`
+- Relancer le service : `net start postgresql-x64-16`
+
+### Redis ne respond pas
+- Vérifier la connexion : `redis-cli ping`
+- Si erreur de connexion, relancer Redis
+- Vérifier le port 6379 : `netstat -ano | findstr 6379`
+
+### Erreur de connexion depuis l'app
+- Vérifier les variables d'environnement dans `.env`
+- Vérifier les crédentiels PostgreSQL
+- Tester manuellement : `psql -h localhost -U sentinel_admin`
+
+---
+
+## Prochaines étapes
+
+Une fois configuré :
+1. ✅ Frontend fonctionne sur http://localhost:5173/
+2. ✅ Backend connecté à PostgreSQL + Redis
+3. ✅ MFA stockée dans Redis
+4. ✅ Utilisateurs stockés dans PostgreSQL
+5. 🚀 Prêt pour la production !
+

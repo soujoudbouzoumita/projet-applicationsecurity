@@ -1,0 +1,23 @@
+embed-server --std-out=echo
+
+module add \
+ --name=org.postgresql \
+ --resources=/opt/jboss/wildfly/standalone/deployments/postgresql-42.7.3.jar \
+ --dependencies=javax.api,javax.transaction.api
+
+/subsystem=datasources/jdbc-driver=postgresql:add(
+    driver-name=postgresql,
+    driver-module-name=org.postgresql,
+    driver-class-name=org.postgresql.Driver
+)
+
+/subsystem=datasources/data-source=SecureTeamDS:add(
+    jndi-name=java:/jdbc/SecureTeamDS,
+    driver-name=postgresql,
+    connection-url=${env.DB_URL},
+    user-name=${env.DB_USER},
+    password=${env.DB_PASSWORD},
+    enabled=true
+)
+
+
