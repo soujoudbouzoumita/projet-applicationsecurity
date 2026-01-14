@@ -7,7 +7,10 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
 import java.util.List;
 
 @Path("/projects")
@@ -16,7 +19,11 @@ import java.util.List;
 @Transactional
 public class ProjectResource {
 
+<<<<<<< HEAD
     @PersistenceContext(unitName = "secureteamPU")
+=======
+    @PersistenceContext
+>>>>>>> origin/main
     private EntityManager em;
 
     @GET
@@ -35,4 +42,8 @@ public class ProjectResource {
     public Project getProject(@PathParam("id") Long id) {
         return em.find(Project.class, id);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/main

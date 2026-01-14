@@ -30,8 +30,12 @@ public class SecurityFilter implements ContainerRequestFilter {
         String path = requestContext.getUriInfo().getPath();
 
         // SecureTeam Access: Allow public access to health and authentication setup
+<<<<<<< HEAD
         // But enforce security for validation endpoint
         if (path.contains("/auth/") && !path.contains("/validate")) {
+=======
+        if (path.contains("/auth/")) {
+>>>>>>> origin/main
             return;
         }
 

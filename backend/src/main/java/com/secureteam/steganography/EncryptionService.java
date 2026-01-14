@@ -8,6 +8,10 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
+<<<<<<< HEAD
+=======
+import java.util.Base64;
+>>>>>>> origin/main
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -25,7 +29,11 @@ public class EncryptionService {
     private String masterPassword;
 
     @Inject
+<<<<<<< HEAD
     @ConfigProperty(name = "com.secureteam.encryption.salt")
+=======
+    @ConfigProperty(name = "com.secureteam.steganography.salt")
+>>>>>>> origin/main
     private String salt;
 
     public byte[] encrypt(byte[] data) throws Exception {

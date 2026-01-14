@@ -1,6 +1,10 @@
 import { LitElement, html, css } from 'lit';
 import { AuthService } from './auth-service.js';
+<<<<<<< HEAD
 
+=======
+import './mock-api.js'; // Mock API pour test sans backend
+>>>>>>> origin/main
 
 export class SecureTeamApp extends LitElement {
   static properties = {
@@ -18,8 +22,12 @@ export class SecureTeamApp extends LitElement {
     approvalComment: { type: String },
     requestResource: { type: String },
     requestWindow: { type: String },
+<<<<<<< HEAD
     requestJustification: { type: String },
     isRegistering: { type: Boolean }
+=======
+    requestJustification: { type: String }
+>>>>>>> origin/main
   };
 
   constructor() {
@@ -34,8 +42,12 @@ export class SecureTeamApp extends LitElement {
     this.qrImage = "";
     this.pendingUser = "";
     this.backendStatus = "checking";
+<<<<<<< HEAD
     this.isRegistering = false;
 
+=======
+    
+>>>>>>> origin/main
     // Charger les requests depuis localStorage ou utiliser les valeurs par défaut
     const savedRequests = localStorage.getItem('secureteam_requests');
     if (savedRequests) {
@@ -62,7 +74,11 @@ export class SecureTeamApp extends LitElement {
       // Sauvegarder les données initiales
       localStorage.setItem('secureteam_requests', JSON.stringify(this.pendingRequests));
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> origin/main
     this.selectedRequest = null;
     this.approvalComment = "";
     this.requestResource = "Infrastucture - Cloud Console [R/W]";
@@ -254,7 +270,11 @@ export class SecureTeamApp extends LitElement {
                     ${this.backendStatus === 'offline' ? html`<div style="padding: 0.5rem; background: rgba(244, 63, 94, 0.1); color: #fb7185; border-radius: 8px; font-size: 0.8rem; margin-bottom: 1.5rem; text-align: center; border: 1px solid rgba(244, 63, 94, 0.3);">⚠️ Security Engine Offline - Please wait for backend to start...</div>` : ''}
                     ${this.backendStatus === 'checking' ? html`<div style="padding: 0.5rem; background: rgba(56, 189, 248, 0.1); color: #38bdf8; border-radius: 8px; font-size: 0.8rem; margin-bottom: 1.5rem; text-align: center;">Checking Security Engine...</div>` : ''}
                     
+<<<<<<< HEAD
                     ${this.loginStep === 1 ? (this.isRegistering ? this._renderRegisterForm() : this._renderLoginForm()) : this._renderMFAForm()}
+=======
+                    ${this.loginStep === 1 ? this._renderLoginForm() : this._renderMFAForm()}
+>>>>>>> origin/main
                 </div>
             </div>
             `;
@@ -268,9 +288,15 @@ export class SecureTeamApp extends LitElement {
                 ${this.userRole === 'security_admin' ? 'ADMIN MODE' : 'Consultant'} Mode
             </span>
             <button class="btn-ghost" @click="${() => this.activeView = 'dashboard'}">Dashboard</button>
+<<<<<<< HEAD
             ${this.userRole === 'security_admin'
         ? html`<button class="btn-ghost" @click="${() => this.activeView = 'responses'}">Responses</button>`
         : html`
+=======
+            ${this.userRole === 'security_admin' 
+              ? html`<button class="btn-ghost" @click="${() => this.activeView = 'responses'}">Responses</button>` 
+              : html`
+>>>>>>> origin/main
                 <button class="btn-ghost" @click="${() => this.activeView = 'request'}">Submit Request</button>
                 <button class="btn-ghost" @click="${() => this.activeView = 'myRequests'}">My Requests</button>
               `}
@@ -287,16 +313,26 @@ export class SecureTeamApp extends LitElement {
 
   _renderLoginForm() {
     return html`
+<<<<<<< HEAD
             <h3 style="margin-bottom: 1.5rem; text-align: center;">Secure Login</h3>
             <input type="text" placeholder="Username" id="user">
             <input type="password" placeholder="Password" id="pass">
             <button class="btn-primary" style="margin-top: 1rem;" ?disabled="${this.backendStatus !== 'online'}" @click="${this._handleLoginClick}">Sign In</button>
             <p style="font-size: 0.8rem; color: #94a3b8; text-align: center; margin-top: 1.5rem;">
                 New here? <a href="#" style="color: #38bdf8;" @click="${(e) => { e.preventDefault(); this.isRegistering = true; }}">Create an account</a>
+=======
+            <label style="font-size: 0.8rem; color: #94a3b8;">User Identity</label>
+            <input type="text" placeholder="Username" id="user" value="admin">
+            <input type="password" placeholder="Password" id="pass" value="password">
+            <button class="btn-primary" ?disabled="${this.backendStatus !== 'online'}" @click="${this._toMFAStep}">Next Step: Verify MFA</button>
+            <p style="font-size: 0.75rem; color: #64748b; margin-top: 1rem; text-align: center;">
+                Zero Trust Verification: Step 1 of 2
+>>>>>>> origin/main
             </p>
         `;
   }
 
+<<<<<<< HEAD
   _renderRegisterForm() {
     return html`
               <h3 style="margin-bottom: 1.5rem; text-align: center;">Create Account</h3>
@@ -316,6 +352,8 @@ export class SecureTeamApp extends LitElement {
           `;
   }
 
+=======
+>>>>>>> origin/main
   _renderMFAForm() {
     return html`
             <div class="mfa-box">
@@ -490,9 +528,15 @@ export class SecureTeamApp extends LitElement {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                 <div class="card">
                     <h3 style="margin-bottom: 1rem;">Pending Requests to Review</h3>
+<<<<<<< HEAD
                     ${this.pendingRequests.filter(r => r.status === 'PENDING').length === 0
         ? html`<p style="color: #94a3b8; text-align: center; padding: 2rem;">No pending requests</p>`
         : html`<div style="display: flex; flex-direction: column; gap: 0.8rem;">
+=======
+                    ${this.pendingRequests.filter(r => r.status === 'PENDING').length === 0 
+                      ? html`<p style="color: #94a3b8; text-align: center; padding: 2rem;">No pending requests</p>`
+                      : html`<div style="display: flex; flex-direction: column; gap: 0.8rem;">
+>>>>>>> origin/main
                         ${this.pendingRequests.filter(r => r.status === 'PENDING').map(req => html`
                             <div style="padding: 1rem; background: rgba(56, 189, 248, 0.05); border-left: 3px solid #38bdf8; border-radius: 4px; cursor: pointer;" 
                                  @click="${() => this.selectedRequest = req}">
@@ -624,6 +668,7 @@ export class SecureTeamApp extends LitElement {
 
   _renderMyRequests() {
     const myRequests = this.pendingRequests.filter(req => req.username === this.pendingUser);
+<<<<<<< HEAD
 
     return html`
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
@@ -637,15 +682,39 @@ export class SecureTeamApp extends LitElement {
             req.status === 'APPROVED' ? '#4ade80' :
               '#fb7185'
           }; cursor: pointer;" @click="${() => this.selectedRequest = req}">
+=======
+    
+    return html`
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
+                ${myRequests.length === 0 
+                  ? html`<div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                      <p style="color: #94a3b8; font-size: 1.1rem;">You haven't submitted any requests yet.</p>
+                      <button class="btn-primary" style="margin-top: 1rem;" @click="${() => this.activeView = 'request'}">Submit a Request</button>
+                    </div>`
+                  : myRequests.map(req => html`
+                    <div class="card" style="border-left: 4px solid ${
+                      req.status === 'PENDING' ? '#facc15' : 
+                      req.status === 'APPROVED' ? '#4ade80' : 
+                      '#fb7185'
+                    }; cursor: pointer;" @click="${() => this.selectedRequest = req}">
+>>>>>>> origin/main
                       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
                         <div>
                           <h3 style="margin: 0 0 0.3rem 0;">${req.requestType}</h3>
                           <div style="font-size: 0.75rem; color: #94a3b8;">📅 ${req.timestamp}</div>
                         </div>
+<<<<<<< HEAD
                         <span style="padding: 0.3rem 0.8rem; background: ${req.status === 'PENDING' ? 'rgba(250, 204, 21, 0.2); color: #facc15' :
             req.status === 'APPROVED' ? 'rgba(74, 222, 128, 0.2); color: #4ade80' :
               'rgba(251, 113, 133, 0.2); color: #fb7185'
           }; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">${req.status}</span>
+=======
+                        <span style="padding: 0.3rem 0.8rem; background: ${
+                          req.status === 'PENDING' ? 'rgba(250, 204, 21, 0.2); color: #facc15' : 
+                          req.status === 'APPROVED' ? 'rgba(74, 222, 128, 0.2); color: #4ade80' : 
+                          'rgba(251, 113, 133, 0.2); color: #fb7185'
+                        }; border-radius: 4px; font-size: 0.7rem; font-weight: 600;">${req.status}</span>
+>>>>>>> origin/main
                       </div>
                       <p style="color: #cbd5e1; margin: 0;">${req.description.substring(0, 80)}${req.description.length > 80 ? '...' : ''}</p>
                     </div>
@@ -657,10 +726,18 @@ export class SecureTeamApp extends LitElement {
                 <h3 style="margin-bottom: 1rem;">Request Details</h3>
                 <div style="background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 8px;">
                   <div style="margin-bottom: 1rem;">
+<<<<<<< HEAD
                     <span style="padding: 0.4rem 0.8rem; background: ${this.selectedRequest.status === 'PENDING' ? 'rgba(250, 204, 21, 0.2); color: #facc15' :
           this.selectedRequest.status === 'APPROVED' ? 'rgba(74, 222, 128, 0.2); color: #4ade80' :
             'rgba(251, 113, 133, 0.2); color: #fb7185'
         }; border-radius: 4px; font-weight: 600; font-size: 0.8rem;">${this.selectedRequest.status}</span>
+=======
+                    <span style="padding: 0.4rem 0.8rem; background: ${
+                      this.selectedRequest.status === 'PENDING' ? 'rgba(250, 204, 21, 0.2); color: #facc15' : 
+                      this.selectedRequest.status === 'APPROVED' ? 'rgba(74, 222, 128, 0.2); color: #4ade80' : 
+                      'rgba(251, 113, 133, 0.2); color: #fb7185'
+                    }; border-radius: 4px; font-weight: 600; font-size: 0.8rem;">${this.selectedRequest.status}</span>
+>>>>>>> origin/main
                   </div>
                   
                   <div style="margin-bottom: 1rem;">
@@ -676,9 +753,17 @@ export class SecureTeamApp extends LitElement {
                   ${this.selectedRequest.status !== 'PENDING' ? html`
                     <div style="margin-bottom: 1rem;">
                       <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; margin-bottom: 0.3rem;">Admin Response</div>
+<<<<<<< HEAD
                       <div style="padding: 0.8rem; background: ${this.selectedRequest.status === 'APPROVED' ? 'rgba(74, 222, 128, 0.05)' : 'rgba(251, 113, 133, 0.05)'
           }; border-radius: 6px; border-left: 2px solid ${this.selectedRequest.status === 'APPROVED' ? '#4ade80' : '#fb7185'
           };">
+=======
+                      <div style="padding: 0.8rem; background: ${
+                        this.selectedRequest.status === 'APPROVED' ? 'rgba(74, 222, 128, 0.05)' : 'rgba(251, 113, 133, 0.05)'
+                      }; border-radius: 6px; border-left: 2px solid ${
+                        this.selectedRequest.status === 'APPROVED' ? '#4ade80' : '#fb7185'
+                      };">
+>>>>>>> origin/main
                         ${this.selectedRequest.comment || 'No additional comments provided.'}
                       </div>
                     </div>
@@ -712,21 +797,33 @@ export class SecureTeamApp extends LitElement {
     };
 
     this.pendingRequests = [...this.pendingRequests, newRequest];
+<<<<<<< HEAD
 
     // Sauvegarder dans localStorage
     localStorage.setItem('secureteam_requests', JSON.stringify(this.pendingRequests));
 
+=======
+    
+    // Sauvegarder dans localStorage
+    localStorage.setItem('secureteam_requests', JSON.stringify(this.pendingRequests));
+    
+>>>>>>> origin/main
     alert('Your JIT Request has been submitted to the Security Team!');
     this.requestJustification = "";
     this.activeView = 'dashboard';
   }
 
+<<<<<<< HEAD
   async _handleLoginClick() {
+=======
+  async _toMFAStep() {
+>>>>>>> origin/main
     const user = this.shadowRoot.getElementById('user').value;
     const pass = this.shadowRoot.getElementById('pass').value;
     console.log('🔐 Login attempt for user:', user);
 
     if (user && pass) {
+<<<<<<< HEAD
       try {
         const data = await this.authService.login(user, pass);
         console.log("Login Check:", data);
@@ -744,12 +841,38 @@ export class SecureTeamApp extends LitElement {
         }
       } catch (e) {
         alert('Login failed: ' + e.message);
+=======
+      this.pendingUser = user;
+      this.userRole = user === 'admin' ? 'security_admin' : 'external_collaborator';
+
+      // Fetch dynamic QR code from backend
+      try {
+        console.log('📧 Fetching MFA setup for:', user);
+        const resp = await fetch(`/api/auth/mfa/setup?username=${user}`);
+        console.log('Response status:', resp.status, 'ok:', resp.ok);
+        
+        if (!resp.ok) {
+          throw new Error(`HTTP ${resp.status}`);
+        }
+        
+        const data = await resp.json();
+        console.log('✅ MFA setup data received:', data);
+        this.qrImage = data.qrImage;
+        console.log('📸 QR Image set, updating loginStep from', this.loginStep, 'to 2...');
+        this.loginStep = 2;
+        console.log('✅ loginStep is now:', this.loginStep);
+        this.requestUpdate();
+      } catch (e) {
+        console.error("❌ MFA setup failed", e);
+        alert("Connection to Security Engine failed. Check if backend is running.");
+>>>>>>> origin/main
       }
     } else {
       alert('Invalid credentials');
     }
   }
 
+<<<<<<< HEAD
   async _register() {
     const user = this.shadowRoot.getElementById('reg-user').value;
     const pass = this.shadowRoot.getElementById('reg-pass').value;
@@ -785,13 +908,33 @@ export class SecureTeamApp extends LitElement {
     }
   }
 
+=======
+>>>>>>> origin/main
   async _login() {
     const otp = this.shadowRoot.getElementById('otp').value;
     if (otp.length === 6) {
       try {
+<<<<<<< HEAD
         await this.authService.verifyMfa(this.pendingUser, otp);
         this.isAuthenticated = true;
         this.loginStep = 1;
+=======
+        // CALL REAL BACKEND MFA VERIFY
+        const resp = await fetch(`/api/auth/mfa/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: this.pendingUser, code: otp })
+        });
+
+        if (resp.ok) {
+          const data = await resp.json();
+          localStorage.setItem('secureteam_token', data.token);
+          this.isAuthenticated = true;
+          this.loginStep = 1;
+        } else {
+          alert('MFA Verification failed. Incorrect code.');
+        }
+>>>>>>> origin/main
       } catch (e) {
         alert('MFA Verification error: ' + e.message);
       }
@@ -802,19 +945,33 @@ export class SecureTeamApp extends LitElement {
 
   _approveRequest() {
     if (!this.selectedRequest) return;
+<<<<<<< HEAD
 
     console.log('Approving request from:', this.selectedRequest.username);
 
+=======
+    
+    console.log('Approving request from:', this.selectedRequest.username);
+    
+>>>>>>> origin/main
     const reqIndex = this.pendingRequests.findIndex(r => r.id === this.selectedRequest.id);
     if (reqIndex !== -1) {
       this.pendingRequests[reqIndex].status = 'APPROVED';
       this.pendingRequests[reqIndex].comment = this.approvalComment;
       this.pendingRequests = [...this.pendingRequests];
+<<<<<<< HEAD
 
       // Sauvegarder dans localStorage
       localStorage.setItem('secureteam_requests', JSON.stringify(this.pendingRequests));
     }
 
+=======
+      
+      // Sauvegarder dans localStorage
+      localStorage.setItem('secureteam_requests', JSON.stringify(this.pendingRequests));
+    }
+    
+>>>>>>> origin/main
     alert(`Request from ${this.selectedRequest.username} has been APPROVED!`);
     this.selectedRequest = null;
     this.approvalComment = "";
@@ -822,19 +979,33 @@ export class SecureTeamApp extends LitElement {
 
   _rejectRequest() {
     if (!this.selectedRequest) return;
+<<<<<<< HEAD
 
     console.log('Rejecting request from:', this.selectedRequest.username);
 
+=======
+    
+    console.log('Rejecting request from:', this.selectedRequest.username);
+    
+>>>>>>> origin/main
     const reqIndex = this.pendingRequests.findIndex(r => r.id === this.selectedRequest.id);
     if (reqIndex !== -1) {
       this.pendingRequests[reqIndex].status = 'REJECTED';
       this.pendingRequests[reqIndex].comment = this.approvalComment;
       this.pendingRequests = [...this.pendingRequests];
+<<<<<<< HEAD
 
       // Sauvegarder dans localStorage
       localStorage.setItem('secureteam_requests', JSON.stringify(this.pendingRequests));
     }
 
+=======
+      
+      // Sauvegarder dans localStorage
+      localStorage.setItem('secureteam_requests', JSON.stringify(this.pendingRequests));
+    }
+    
+>>>>>>> origin/main
     alert(`Request from ${this.selectedRequest.username} has been REJECTED!`);
     this.selectedRequest = null;
     this.approvalComment = "";

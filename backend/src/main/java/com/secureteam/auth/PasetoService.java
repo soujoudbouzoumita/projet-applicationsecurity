@@ -59,6 +59,7 @@ public class PasetoService {
         this.secretKey = Keys.secretKey();
     }
 
+<<<<<<< HEAD
     public String createPublicToken(String subject, String audience, String deviceId) {
         String jti = UUID.randomUUID().toString();
 
@@ -75,6 +76,26 @@ public class PasetoService {
                 .claim("device_id", deviceId)
                 .claim("jti", jti)
                 .compact();
+=======
+    public String createPublicToken(String subject, String department, java.util.Collection<String> roles,
+            java.util.Collection<String> projects, String deviceId) {
+        String jti = UUID.randomUUID().toString();
+
+        // SecureTeam Access: Dynamic session with project context from Database
+        dev.paseto.jpaseto.PasetoBuilder builder = Pasetos.V2.PUBLIC.builder()
+                .setPrivateKey(keyPair.getPrivate())
+                .setSubject(subject)
+                .setAudience("secureteam-web")
+                .setIssuer("iam.yourdomain.me")
+                .setExpiration(Instant.now().plus(1, ChronoUnit.HOURS))
+                .claim("dept", department)
+                .claim("roles", roles)
+                .claim("projects", projects)
+                .claim("device_id", deviceId)
+                .claim("jti", jti);
+
+        return builder.compact();
+>>>>>>> origin/main
     }
 
     public java.security.PublicKey getPublicKey() {

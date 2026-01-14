@@ -29,4 +29,8 @@ COPY --from=build /app/target/secureteam-access.war \
 
 EXPOSE 8080 9990
 
+<<<<<<< HEAD
 ENTRYPOINT ["/opt/jboss/wildfly/entrypoint.sh"]
+=======
+ENTRYPOINT ["/opt/jboss/wildfly/entrypoint.sh"]
+>>>>>>> origin/main

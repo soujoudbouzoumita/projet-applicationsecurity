@@ -14,6 +14,7 @@ public class User implements Serializable {
     @Column(unique = true, nullable = false)
     private String username;
 
+<<<<<<< HEAD
     /**
      * Never store plaintext passwords.
      * PBKDF2-HMAC-SHA512 derived hash (Base64) + per-user random salt (Base64).
@@ -23,6 +24,10 @@ public class User implements Serializable {
 
     @Column(name = "password_salt", nullable = false, length = 128)
     private String passwordSalt;
+=======
+    @Column(nullable = false)
+    private String password;
+>>>>>>> origin/main
 
     @Column(name = "totp_secret")
     private String totpSecret;
@@ -59,6 +64,7 @@ public class User implements Serializable {
         this.username = username;
     }
 
+<<<<<<< HEAD
     public String getPasswordHash() {
         return passwordHash;
     }
@@ -73,6 +79,14 @@ public class User implements Serializable {
 
     public void setPasswordSalt(String passwordSalt) {
         this.passwordSalt = passwordSalt;
+=======
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+>>>>>>> origin/main
     }
 
     public String getTotpSecret() {

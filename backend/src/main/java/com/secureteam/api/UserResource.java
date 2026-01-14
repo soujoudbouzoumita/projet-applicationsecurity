@@ -1,9 +1,14 @@
 package com.secureteam.api;
 
 import com.secureteam.model.User;
+<<<<<<< HEAD
 import jakarta.annotation.security.RolesAllowed;
 
 
+=======
+import com.secureteam.model.Role;
+import com.secureteam.model.Project;
+>>>>>>> origin/main
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
@@ -11,8 +16,13 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+<<<<<<< HEAD
 @Path("/users")
 @RolesAllowed("ADMIN")
+=======
+
+@Path("/users")
+>>>>>>> origin/main
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Transactional

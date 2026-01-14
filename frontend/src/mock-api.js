@@ -8,7 +8,11 @@ export class MockAPI {
 
   static async setupMfa(username) {
     const secret = "JBSWY3DPEBLW64TMMQ======";
+<<<<<<< HEAD
     const qrUri = `otpauth://totp/SecureTeamAccess:${username}?secret=${secret}&issuer=SecureTeamAccess`;
+=======
+    const qrUri = otpauth://totp/SecureTeamAccess:${username}?secret=${secret}&issuer=SecureTeamAccess;
+>>>>>>> origin/main
     
     try {
       const { default: QRCodeLib } = await import('qrcode');
@@ -190,4 +194,8 @@ window.fetch = async (url, options = {}) => {
   return originalFetch(url, options);
 };
 
+<<<<<<< HEAD
 console.log("Mock API loaded");
+=======
+console.log("Mock API loaded");
+>>>>>>> origin/main
