@@ -22,8 +22,7 @@ Bienvenue dans **SecureTeam Access**, une application IAM de classe entreprise a
 
 1. **Lire:** Tous les documents en ordre recommandé (voir [INDEX_DOCUMENTATION.md](INDEX_DOCUMENTATION.md))
 2. **Étudier:** Code source (5 fichiers modifiés + 5 fichiers créés)
-3. **Pratiquer:** Questions d'interview ([ENTRETIEN_SECURITE_CHECKLIST.md](ENTRETIEN_SECURITE_CHECKLIST.md))
-4. **Planifier:** Déploiement production
+3. **Planifier:** Déploiement production
 
 ---
 
@@ -38,7 +37,6 @@ projet-applicationsecurity/
 │   ├── EXECUTIVE_SUMMARY.md            ← Vue d'ensemble (10 min)
 │   ├── README_SECURITE_COMPLET.md      ← Guide complet (45 min)
 │   ├── FICHE_TECHNIQUE_SECURITE.md     ← Détails techniques (60 min)
-│   ├── ENTRETIEN_SECURITE_CHECKLIST.md ← Interview prep (30 min)
 │   ├── REMEDIATIONS_VULNERABILITES.md  ← Fix details (30 min)
 │   └── GUIDE_INTEGRATION_FILTRES.md    ← Intégration (30 min)
 │
@@ -220,17 +218,6 @@ cp backend/target/secureteam-access.war /opt/wildfly/standalone/deployments/
 - Monitoring & alerts
 - Operational procedures
 
-### 👤 **Candidate (Interview)**
-**Read:**
-1. EXECUTIVE_SUMMARY.md (10 min)
-2. FICHE_TECHNIQUE_SECURITE.md (45 min)
-3. ENTRETIEN_SECURITE_CHECKLIST.md (30 min + practice)
-
-- Technical context
-- Implementation details
-- Interview Q&A
-- Practice answers
-
 ---
 
 ## 🎯 Production Checklist
@@ -290,22 +277,6 @@ nginx.conf                        Reverse proxy config
 
 ---
 
-## 💡 Common Questions
-
-### Q: Are secrets really not in the code?
-**A:** ✅ Yes! All secrets are now loaded from environment variables using MicroProfile Config.
-
-### Q: Is TOTP RFC 6238 compliant?
-**A:** ✅ Yes! Window reduced from ±90s (±3 windows) to ±60s (±2 windows) per RFC 6238 recommendations.
-
-### Q: How complete is the audit logging?
-**A:** ✅ Very! Every authentication, MFA, access control decision, and admin action is logged to Redis (fast) and PostgreSQL (archive).
-
-### Q: Can this handle enterprise scale?
-**A:** ✅ Yes! Redis for distributed rate limiting, PostgreSQL replication-ready, stateless services for horizontal scaling.
-
-### Q: Is documentation really 150+ pages?
-**A:** ✅ Yes! 8 documents covering everything from architecture to deployment to interview prep.
 
 ---
 
@@ -352,34 +323,10 @@ mvn clean test
 1. **Technical Questions?** → See [FICHE_TECHNIQUE_SECURITE.md](FICHE_TECHNIQUE_SECURITE.md)
 2. **Configuration Issues?** → See [GUIDE_INTEGRATION_FILTRES.md](GUIDE_INTEGRATION_FILTRES.md)
 3. **Deployment Help?** → See [README_SECURITE_COMPLET.md](README_SECURITE_COMPLET.md) (Deployment section)
-4. **Interview Prep?** → See [ENTRETIEN_SECURITE_CHECKLIST.md](ENTRETIEN_SECURITE_CHECKLIST.md)
-5. **All Docs?** → See [INDEX_DOCUMENTATION.md](INDEX_DOCUMENTATION.md)
+4. **All Docs?** → See [INDEX_DOCUMENTATION.md](INDEX_DOCUMENTATION.md)
 
 ---
 
-## 🎓 Learning Path
-
-```
-Beginner (30 min)
-├─ EXECUTIVE_SUMMARY.md
-└─ README_SECURITE_COMPLET.md (Overview section)
-
-Intermediate (2 hours)
-├─ README_SECURITE_COMPLET.md (All sections)
-├─ REMEDIATIONS_VULNERABILITES.md
-└─ GUIDE_INTEGRATION_FILTRES.md
-
-Advanced (4-5 hours)
-├─ FICHE_TECHNIQUE_SECURITE.md
-├─ All code files (9 modified/created)
-└─ Complete deployment setup
-
-Expert (Full mastery)
-├─ All 7 documentation files
-├─ Complete code review
-├─ Hands-on deployment
-└─ Practice interview questions (80+)
-```
 
 ---
 
@@ -398,8 +345,7 @@ Expert (Full mastery)
 🏆 Standards Compliance
    └─ OWASP Top 10 + RFC + NIST
 
-🎓 Interview-Ready Knowledge
-   └─ 80+ questions with prepared answers
+
 
 🚀 Enterprise Deployment Ready
    └─ Docker + K8s + monitoring included
